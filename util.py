@@ -2,14 +2,15 @@ import pandas as pd
 import requests
 
 API_URL="http://api.censusreporter.org/1.0/data/show/{release}?table_ids={table_ids}&geo_ids={geoids}"
+
 def get_data(tables=None, geoids=None, release='latest'):
     if geoids is None:
         geoids = ['040|01000US']
-    elif isinstance(geoids,basestring):
+    elif isinstance(geoids,str):
         geoids = [geoids]
     if tables is None:
         tables = ['B01001']
-    elif isinstance(tables,basestring):
+    elif isinstance(tables,str):
         tables=[tables]
 
     url = API_URL.format(table_ids=','.join(tables).upper(), 
@@ -34,6 +35,7 @@ def get_dataframe(tables=None, geoids=None, release='latest',geo_names=False,col
         frame = frame.rename(columns=d)
     return frame
 
+
 def prep_for_pandas(json_data,include_moe=False):
     """Given a dict of dicts as they come from a Census Reporter API call, set it up to be amenable to pandas.DataFrame.from_dict"""
     result = {}
@@ -51,5 +53,5 @@ def prep_for_pandas(json_data,include_moe=False):
 
 if __name__ == '__main__':
     df = get_dataframe()
-    print "Top 10 most populous states"
-    print df.sort('B01001001',ascending=False)['B01001001'].head(10)
+    print("Top 10 most populous states")
+    print(df.sort_values('B01001001',ascending=False)['B01001001'].head(10))
